@@ -1,0 +1,84 @@
+---
+import { getCollection } from 'astro:content';
+import '../styles/global.css'; // Asumiendo que tienes estilos globales
+
+// Obtiene todos los posts y los ordena por fecha (más recientes primero)
+const posts = await getCollection('posts');
+const sortedPosts = posts.sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+);
+
+// Formatea la fecha para mostrarla
+function formatDate(date) {
+  return new Date(date).toLocaleDateString('es-ES', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+}
+---
+
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mi Blog Personal</title>
+    <meta name="description" content="Un blog sobre mis notas y aprendizajes" />
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <h1>Mi Blog Personal</h1>
+        <nav>
+          <a href="/">Inicio</a>
+          <a href="/tags">Etiquetas</a>
+        </nav>
+      </div>
+    </header>
+    
+    <main class="container">
+      <section class="intro">
+        <h2>Bienvenido a mi blog</h2>
+        <p>
+          Este es un blog construido con Astro y automatizado con Obsidian.
+          Aquí comparto mis notas, aprendizajes y reflexiones.
+        </p>
+      </section>
+      
+      <section class="posts">
+        <h2>Últimas publicaciones</h2>
+        
+        {sortedPosts.length === 0 ? (
+          <p>No hay publicaciones todavía. ¡Vuelve pronto!</p>
+        ) : (
+          <ul class="post-list">
+            {sortedPosts.map(post => (
+              <li>
+                <a href={`/posts/${post.slug}`}>
+                  <h3>{post.data.title}</h3>
+                  <time datetime={post.data.date.toISOString()}>
+                    {formatDate(post.data.date)}
+                  </time>
+                  {post.data.tags && post.data.tags.length > 0 && (
+                    <div class="tags">
+                      {post.data.tags.map(tag => (
+                        <span class="tag">#{tag}</span>
+                      ))}
+                    </div>
+                  )}
+                </a>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+    </main>
+    
+    <footer>
+      <div class="container">
+        <p>&copy; {new Date().getFullYear()} Mi Blog. Todos los derechos reservados.</p>
+      </div>
+    </footer>
+  </body>
+</html>

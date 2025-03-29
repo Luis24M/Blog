@@ -1,0 +1,65 @@
+---
+// Importa los componentes y utilidades necesarios
+import '../styles/global.css'; // Asumiendo que tienes estilos globales
+
+interface Props {
+  title: string;
+  date: Date;
+  tags?: string[];
+}
+
+const { title, date, tags = [] } = Astro.props;
+
+// Formatea la fecha para mostrarla
+const formattedDate = new Date(date).toLocaleDateString('es-ES', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+---
+
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title} | Mi Blog</title>
+    <meta name="description" content={`${title} - Mi Blog Personal`} />
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <nav>
+          <a href="/">Inicio</a>
+          <a href="/tags">Etiquetas</a>
+        </nav>
+      </div>
+    </header>
+    
+    <main class="container">
+      <article class="post">
+        <h1>{title}</h1>
+        <div class="post-meta">
+          <time datetime={date.toISOString()}>{formattedDate}</time>
+          {tags.length > 0 && (
+            <div class="tags">
+              {tags.map(tag => (
+                <a href={`/tags/${tag}`} class="tag">#{tag}</a>
+              ))}
+            </div>
+          )}
+        </div>
+        
+        <div class="content">
+          <slot />
+        </div>
+      </article>
+    </main>
+    
+    <footer>
+      <div class="container">
+        <p>&copy; {new Date().getFullYear()} Mi Blog. Todos los derechos reservados.</p>
+      </div>
+    </footer>
+  </body>
+</html>

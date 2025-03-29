@@ -1,0 +1,27 @@
+---
+import { getCollection } from 'astro:content';
+import BlogPost from '../../layouts/BlogPost.astro';
+
+// Genera todas las rutas para los posts
+export async function getStaticPaths() {
+  const posts = await getCollection('posts');
+  return posts.map(post => ({
+    params: { slug: post.slug },
+    props: { post },
+  }));
+}
+
+// Obtiene el post para esta página
+const { post } = Astro.props;
+
+// Renderiza el contenido Markdown a HTML
+const { Content } = await post.render();
+---
+
+<BlogPost
+  title={post.data.title}
+  date={post.data.date}
+  tags={post.data.tags}
+>
+  <Content />
+</BlogPost>

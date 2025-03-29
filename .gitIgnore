@@ -1,0 +1,16 @@
+#Obsidian config
+.obsidian/
+
+#Node modules
+node_modules/
+
+#MacOS
+.DS_Store
+
+#Build Output
+dist/
+.output/
+
+# Enviroment variables
+.env
+.env.*
